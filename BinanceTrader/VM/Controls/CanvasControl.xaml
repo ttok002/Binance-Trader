@@ -1,0 +1,2031 @@
+﻿<!--
+    *
+    *MIT License
+    *
+    *Copyright (c) 2022 S Christison
+    *
+    *Permission is hereby granted, free of charge, to any person obtaining a copy
+    *of this software and associated documentation files (the "Software"), to deal
+    *in the Software without restriction, including without limitation the rights
+    *to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    *copies of the Software, and to permit persons to whom the Software is
+    *furnished to do so, subject to the following conditions:
+    *
+    *The above copyright notice and this permission notice shall be included in all
+    *copies or substantial portions of the Software.
+    *
+    *THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    *IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    *FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    *AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    *LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    *OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    *SOFTWARE.
+    *
+-->
+
+<UserControl
+    x:Class="BTNET.VM.Controls.CanvasControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:BTNET.BV.Converters"
+    xmlns:tk="clr-namespace:BTNET.Toolkit"
+    Name="CanvasC"
+    SizeChanged="CanvasC_SizeChanged">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <converters:NumericFieldConverter x:Key="converter" />
+        <converters:ConvertFormattingBase x:Key="tickScale"/>
+        <converters:ConvertPriceTickScaleBase x:Key="priceScale"/>
+    </UserControl.Resources>
+
+    <Canvas
+        x:Name="Canvas"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Bottom">
+        <StackPanel
+            x:Name="MarginBox"
+            Canvas.Left="{Binding VisibilityVM.PanelMarginInfoLeft, Mode=TwoWay}"
+            Canvas.Top="{Binding VisibilityVM.PanelMarginInfoTop, Mode=TwoWay}"
+            Width="100"
+            MouseMove="MarginBox_MouseMove"
+            Orientation="Vertical"
+            PreviewMouseLeftButtonDown="MarginBox_PreviewMouseLeftButtonDown">
+            <GroupBox 
+                Visibility="{Binding BorrowVM.IsolatedInfoVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                Foreground="White">
+                <GroupBox.Header>
+                    <TextBlock
+                        Width="98"
+                        Effect="{DynamicResource TextBlockShadow}"
+                        FontSize="11"
+                        Text="Isolated"
+                        TextAlignment="Center" />
+                </GroupBox.Header>
+                <StackPanel>
+                    <Grid>
+                        <TextBlock 
+                            Text="Level" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding BorrowVM.MarginLevel, Converter={StaticResource converter}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Liquidation"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding BorrowVM.LiquidationPrice, Converter={StaticResource converter}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox
+                Width="100"
+                Visibility="{Binding BorrowVM.MarginInfoVisible, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                Foreground="White">
+                <GroupBox.Header>
+                    <TextBlock 
+                        Effect="{DynamicResource TextBlockShadow}"
+                        FontSize="11"
+                        Text="Margin Info"
+                        TextAlignment="Center" />
+                </GroupBox.Header>
+                <StackPanel>
+                    <Grid>
+                        <TextBlock
+                            Text="Level" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding BorrowVM.MarginLevel, StringFormat=' \{0:N8\}', Mode=OneWay}"
+                            TextAlignment="Center"/>
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Total"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding BorrowVM.TotalAssetOfBtc, StringFormat=' \{0:N8\}', Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Liability" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding BorrowVM.TotalLiabilityOfBtc, StringFormat=' \{0:N8\}', Mode=OneWay}"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="Equity"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding BorrowVM.TotalNetAssetOfBtc, StringFormat=' \{0:N8\}', Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+
+        <GroupBox
+            x:Name="InfoBox"
+            Canvas.Left="{Binding VisibilityVM.PanelInfoBoxLeft, Mode=TwoWay}"
+            Canvas.Top="{Binding VisibilityVM.PanelInfoBoxTop, Mode=TwoWay}"
+            Width="100"
+            MinWidth="100"
+            Padding="1,0"
+            MouseMove="InfoBoxMove"
+            PreviewMouseLeftButtonDown="InfoBoxDown"
+            Visibility="{Binding SettingsVM.ShowSymbolInfoIsChecked, Converter={StaticResource BoolToVis}, Mode=OneWay}" 
+            Foreground="White">
+            <GroupBox.Header>
+                <TextBlock 
+                    Effect="{DynamicResource TextBlockShadow}"
+                    FontSize="11"
+                    Text="Symbol Info" />
+            </GroupBox.Header>
+            <StackPanel>
+                <Grid>
+                    <TextBlock 
+                        TextAlignment="Center"
+                        Text="Trade Fee" />
+                </Grid>
+                <Grid>
+                    <TextBlock
+                        TextAlignment="Center" 
+                        Text="{Binding CurrentlySelectedSymbol.TradeFeeString, Mode=OneWay}" />
+                </Grid>
+
+                <Grid>
+                    <TextBlock
+                        TextAlignment="Center" 
+                        Text="Daily Interest" />
+                </Grid>
+                <Grid>
+                    <TextBlock
+                        TextAlignment="Center" 
+                        Text="{Binding CurrentlySelectedSymbol.DailyInterestRateString, Mode=OneWay}" />
+                </Grid>
+
+                <Grid>
+                    <TextBlock 
+                        TextAlignment="Center"
+                        Text="Yearly Interest" />
+                </Grid>
+                <Grid>
+                    <TextBlock
+                        TextAlignment="Center" 
+                        Text="{Binding CurrentlySelectedSymbol.YearlyInterestRateString, Mode=OneWay}" />
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox
+            x:Name="RealTimeBox"
+            Canvas.Left="{Binding VisibilityVM.PanelRealTimeLeft, Mode=TwoWay}"
+            Canvas.Top="{Binding VisibilityVM.PanelRealTimeTop, Mode=TwoWay}"
+            Width="100"
+            Height="90"
+            Padding="1,0"
+            MouseMove="RealTimeBox_MouseMove"
+            PreviewMouseLeftButtonDown="RealTimeBox_PreviewMouseLeftButtonDown" 
+            Foreground="White">
+            <GroupBox.Header>
+                <TextBlock 
+                    FontSize="12"
+                    Text="{Binding BorrowVM.SymbolName, Mode=OneWay}"
+                    Effect="{DynamicResource TextBlockShadow}"
+                    TextAlignment="Center" />
+            </GroupBox.Header>
+            <StackPanel 
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+                <Grid>
+                    <TextBlock 
+                        Text="{Binding RealTimeVM.AskPrice, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                        TextBlock.FontSize="12"
+                        TextBlock.Foreground="Red"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid>
+                    <TextBlock
+                        Text="{Binding RealTimeVM.AskQuantity, Converter={StaticResource tickScale}, Mode=OneWay}" 
+                        TextBlock.FontSize="12" 
+                        TextBlock.Foreground="Red"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid>
+                    <TextBlock 
+                        Text="{Binding RealTimeVM.BidPrice, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                        TextBlock.FontSize="12"  
+                        TextBlock.Foreground="MediumSpringGreen" 
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid>
+                    <TextBlock 
+                        Text="{Binding RealTimeVM.BidQuantity, Converter={StaticResource tickScale}, Mode=OneWay}" 
+                        TextBlock.FontSize="12" 
+                        TextBlock.Foreground="MediumSpringGreen" 
+                        TextAlignment="Center" />
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox 
+            x:Name="TradeInfoBox"
+            Canvas.Left="{Binding VisibilityVM.TradeInfoLeft, Mode=TwoWay}"
+            Canvas.Top="{Binding VisibilityVM.TradeInfoTop, Mode=TwoWay}"
+            MouseMove="TradeInfoBox_MouseMove"
+            PreviewMouseLeftButtonDown="TradeInfoBox_PreviewMouseLeftButtonDown" 
+            Foreground="White">
+            <GroupBox.Header>
+                <TextBlock
+                    Effect="{DynamicResource TextBlockShadow}"
+                    FontSize="11"
+                    Text="Trade Info"
+                    TextAlignment="Center" />
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="80" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel 
+                    Grid.Row="0"
+                    Grid.Column="0">
+                    <Grid>
+                        <TextBlock 
+                            Text="1 Second" 
+                            TextAlignment="Center"/>
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="Average" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.AverageOneSecond, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="High" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.HighOneSecond, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Low" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding MarketVM.LowOneSecond, Converter={StaticResource priceScale}, Mode=OneWay}"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Speed" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Diff2OneSecond, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Volume"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.VolumeOneSecond, Converter={StaticResource tickScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel
+                    Grid.Row="0" 
+                    Grid.Column="1">
+                    <Grid>
+                        <TextBlock
+                            Text="5 Seconds" 
+                            TextAlignment="Center"/>
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Average" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.AverageFiveSeconds, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="High" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding MarketVM.HighFiveSeconds, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Low" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.LowFiveSeconds, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Speed"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Diff2FiveSeconds, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="Volume"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.VolumeFiveSeconds, Converter={StaticResource tickScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel
+                    Grid.Row="0" 
+                    Grid.Column="2">
+                    <Grid>
+                        <TextBlock 
+                            Text="1 Minute" 
+                            TextAlignment="Center"/>
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Average" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding MarketVM.Average, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="High"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.High, Converter={StaticResource priceScale}, Mode=OneWay}"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Low" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding MarketVM.Low, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Speed" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Diff2, Converter={StaticResource priceScale}, Mode=OneWay}"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Volume" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding MarketVM.Volume, Converter={StaticResource tickScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="3">
+                    <Grid>
+                        <TextBlock 
+                            Text="5 Minutes" 
+                            TextAlignment="Center"/>
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Average"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.AverageFive, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="High" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.HighFive, Converter={StaticResource priceScale}, Mode=OneWay}"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Low"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.LowFive, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Speed"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding MarketVM.Diff2Five, Converter={StaticResource priceScale}, Mode=OneWay}"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="Volume" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.VolumeFive, Converter={StaticResource tickScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel 
+                    Grid.Row="0" 
+                    Grid.Column="4">
+                    <Grid>
+                        <TextBlock 
+                            Text="15 Minutes" 
+                            TextAlignment="Center"/>
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Average"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding MarketVM.AverageFifteen, Converter={StaticResource priceScale}, Mode=OneWay}"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="High"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding MarketVM.HighFifteen, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="Low"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.LowFifteen, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Speed" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding MarketVM.Diff2Fifteen, Converter={StaticResource priceScale}, Mode=OneWay}"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Volume" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.VolumeFifteen, Converter={StaticResource tickScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel 
+                    Grid.Row="0" 
+                    Grid.Column="5">
+                    <Grid>
+                        <TextBlock
+                            Text="1 Hour" 
+                            TextAlignment="Center"/>
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="Average" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding MarketVM.AverageHour, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="High" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.HighHour, Converter={StaticResource priceScale}, Mode=OneWay}"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Low" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.LowHour, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="Speed"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock
+                            Text="{Binding MarketVM.Diff2Hour, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="Volume"
+                            TextAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock 
+                            Text="{Binding MarketVM.VolumeHour, Converter={StaticResource tickScale}, Mode=OneWay}" 
+                            TextAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox
+            x:Name="BreakdownBox"
+            Canvas.Left="{Binding VisibilityVM.PanelBreakdownLeft, Mode=TwoWay}"
+            Canvas.Top="{Binding VisibilityVM.PanelBreakdownTop, Mode=TwoWay}"
+            Width="140"
+            MinWidth="140"
+            Padding="1,0"
+            MouseMove="BreakDownBoxMove"
+            PreviewMouseLeftButtonDown="BreakDownBoxDown"
+            Visibility="{Binding BorrowVM.ShowBreakdown, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+            Foreground="White">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        Effect="{DynamicResource TextBlockShadow}"
+                        FontSize="11"
+                        TextAlignment="Center"
+                        Text="Breakdown" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="23" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock 
+                        HorizontalAlignment="Left"
+                        Text="One:" />
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Text="{Binding CurrentlySelectedSymbol.One, Converter={StaticResource priceScale}, Mode=OneWay}" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="23" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock 
+                        HorizontalAlignment="Left" 
+                        Text="Two:" />
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Text="{Binding CurrentlySelectedSymbol.Two, Converter={StaticResource priceScale}, Mode=OneWay}" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="23" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        HorizontalAlignment="Left" 
+                        Text="PnL:" />
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Text="{Binding QuoteVM.CombinedPnL, Converter={StaticResource tickScale}, Mode=OneWay}" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="34" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        Text="Quote:" />
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Text="{Binding QuoteVM.CombinedTotal, Converter={StaticResource tickScale}, Mode=OneWay}" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock 
+                        HorizontalAlignment="Left"
+                        Text="Base:"/>
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Text="{Binding QuoteVM.CombinedTotalBase, StringFormat=#\,0.############, Mode=OneWay}" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        Text="Running:"/>
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Foreground="{Binding QuoteVM.RunningTotalColor}"
+                        Text="{Binding QuoteVM.RunningTotalTask, StringFormat=#\,0.############, Mode=OneWay}" />
+                </Grid>
+                <Grid Margin="0,2,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel 
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                        <Button
+                            Width="60"
+                            Margin="0,0,4,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding TradeVM.SellBaseFreeAndClearCommand, Mode=OneWay}"
+                            IsEnabled="{Binding SettingsVM.DangerousButtonsIsChecked, Mode=OneWay}"
+                            CommandParameter="{Binding}"
+                            Content="Sell/Clear"        
+                            ToolTip="Sell all possible free base asset and then clear the order list"
+                            Visibility="{Binding BorrowVM.BaseFreeVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}" />
+                        <Button
+                            Width="60"
+                            Command="{Binding TradeVM.SellBaseFreeCommand, Mode=OneWay}"
+                            CommandParameter="{Binding}"
+                            Content="Sell All"              
+                            IsEnabled="{Binding SettingsVM.DangerousButtonsIsChecked, Mode=OneWay}"
+                            ToolTip="Sell all possible free base asset "
+                            Visibility="{Binding BorrowVM.BaseFreeVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}" />
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox 
+            x:Name="InsightsInfoBox"
+            Canvas.Left="{Binding VisibilityVM.InsightsPanelLeft, Mode=TwoWay}"
+            Canvas.Top="{Binding VisibilityVM.InsightsPanelTop, Mode=TwoWay}"
+            MouseMove="InsightsInfoBox_MouseMove"
+            PreviewMouseLeftButtonDown="InsightsInfoBox_PreviewMouseLeftButtonDown" 
+            Foreground="White">
+            <GroupBox.Header>
+                <TextBlock
+                    Width="95"
+                    Effect="{DynamicResource TextBlockShadow}"
+                    FontSize="11"
+                    Text="Insights"
+                    TextAlignment="Center" />
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="95" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel 
+                    Grid.Row="0" 
+                    Grid.Column="6">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock 
+                            Text="Ready: " 
+                            Width="40"
+                            ToolTip="These insights mean nothing until the timer is replaced with the word True, This takes 1 Hour"/>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Insights.ReadyText, Mode=OneWay}" 
+                            TextAlignment="Center"
+                            ToolTip="These insights mean nothing until the timer is replaced with the word True, This takes 1 Hour" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock 
+                            Text="NH: " 
+                            Width="40" 
+                            ToolTip="New High on Every Timeframe"/>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Insights.NewHigh, Mode=OneWay}"
+                            TextAlignment="Center" 
+                            ToolTip="New High on Every Timeframe" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock 
+                            Text="NL: " 
+                            Width="40" 
+                            ToolTip="New Low on Every Timeframe"/>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Insights.NewLow, Mode=OneWay}" 
+                            TextAlignment="Center"
+                            ToolTip="New Low on Every Timeframe" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock 
+                            Text="NH5: "
+                            Width="40" 
+                            ToolTip="New High on 5 Minute Timeframe"/>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Insights.NewHighFive, Mode=OneWay}" 
+                            TextAlignment="Center"
+                            ToolTip="New High on 5 Minute Timeframe" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Text="NL5: " 
+                            Width="40" 
+                            ToolTip="New Low on 5 Minute Timeframe"/>
+                        <TextBlock
+                            Text="{Binding MarketVM.Insights.NewLowFive, Mode=OneWay}" 
+                            TextAlignment="Center"  
+                            ToolTip="New Low on 5 Minute Timeframe" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock 
+                            Text="NH15: "
+                            Width="40" 
+                            ToolTip="New High on 15 Minute Timeframe"/>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Insights.NewHighFifteen, Mode=OneWay}" 
+                            TextAlignment="Center" 
+                            ToolTip="New High on 15 Minute Timeframe" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock 
+                            Text="NL15: "
+                            Width="40" 
+                            ToolTip="New Low on 15 Minute Timeframe"/>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Insights.NewLowFifteen, Mode=OneWay}" 
+                            TextAlignment="Center" 
+                            ToolTip="New Low on 15 Minute Timeframe" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock 
+                            Text="NH60: "
+                            Width="40" 
+                            ToolTip="New High on 1 Hour Timeframe"/>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Insights.NewHighHour, Mode=OneWay}" 
+                            TextAlignment="Center" 
+                            ToolTip="New High on 1 Hour Timeframe" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock 
+                            Text="NL60: " 
+                            Width="40"
+                            ToolTip="New Low on 1 Hour Timeframe"/>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Insights.NewLowHour, Mode=OneWay}"
+                            TextAlignment="Center"
+                            ToolTip="New Low on 1 Hour Timeframe"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Text="ND: "
+                            Width="40" 
+                            ToolTip="True if the 1 Minute Difference exceeds the Hourly Difference"/>
+                        <TextBlock 
+                            Text="{Binding MarketVM.Insights.NewDifference, Mode=OneWay}"
+                            TextAlignment="Center"
+                            ToolTip="True if the 1 Minute Difference exceeds the Hourly Difference" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock 
+                            Text="VL: "
+                            Width="40" 
+                            ToolTip="The Volume Level" />
+                        <TextBlock 
+                            Text="{Binding MarketVM.Insights.VolumeLevel, Mode=OneWay}" 
+                            TextAlignment="Center"
+                            ToolTip="The Volume Level" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock 
+                            Text="VLP: " 
+                            Width="40" 
+                            ToolTip="The Volume Level as a Percentage" />
+                        <TextBlock 
+                            Text="{Binding MarketVM.Insights.VolumeLevelDecimal, StringFormat=\{0:N3\}%, Mode=OneWay}" 
+                            TextAlignment="Center" 
+                            ToolTip="The Volume Level as a Percentage" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox
+            x:Name="BorrowBox"
+            Canvas.Left="{Binding VisibilityVM.PanelBorrowBoxLeft, Mode=TwoWay}"
+            Canvas.Top="{Binding VisibilityVM.PanelBorrowBoxTop, Mode=TwoWay}"
+            Width="100"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            MouseMove="BorrowBox_MouseMove"
+            PreviewMouseLeftButtonDown="BorrowBox_PreviewMouseLeftButtonDown"
+            Visibility="{Binding BorrowVM.BorrowInfoVisible, Converter={StaticResource BoolToVis}}" 
+            Foreground="White">
+            <GroupBox.Header>
+                <TextBlock
+                    Effect="{DynamicResource TextBlockShadow}"
+                    FontSize="11"
+                    Text="{Binding BorrowVM.BorrowInformationHeader, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                    TextAlignment="Center" />
+            </GroupBox.Header>
+            <StackPanel>
+                <Grid Visibility="{Binding BorrowVM.BaseBorrowVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock
+                        Text="{Binding BorrowVM.BorrowLabelBase, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.BaseBorrowVisible, Converter={StaticResource BoolToVis}}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.BorrowedBase, Converter={StaticResource converter}, Mode=OneWay}"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.BaseInterestVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock 
+                        Text="Interest" 
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.BaseInterestVisible, Converter={StaticResource BoolToVis}}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.InterestBase, Mode=OneWay, StringFormat=' \{0:N8\}'}"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.BaseFreeVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.BorrowLabelBaseFree, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.BaseFreeVisible, Converter={StaticResource BoolToVis}}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.FreeBase, Converter={StaticResource converter}, Mode=OneWay}"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.BaseLockedVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock 
+                        Text="Locked"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.BaseLockedVisible, Converter={StaticResource BoolToVis}}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.LockedBase, Converter={StaticResource converter}, Mode=OneWay}" 
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.BaseTotalVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock 
+                        Text="Total" TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.BaseTotalVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.TotalBase, Converter={StaticResource converter}, Mode=OneWay}" 
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.QuoteBorrowVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.BorrowLabelQuote, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.QuoteBorrowVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.BorrowedQuote, Converter={StaticResource converter}, Mode=OneWay}"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.QuoteInterestVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock
+                        Text="Interest" 
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.QuoteInterestVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock
+                        Text="{Binding BorrowVM.InterestQuote, Converter={StaticResource converter}, Mode=OneWay}"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.QuoteFreeVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.BorrowLabelQuoteFree, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.QuoteFreeVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.FreeQuote, Converter={StaticResource converter}, Mode=OneWay}" 
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.QuoteLockedVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock
+                        Text="Locked"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.QuoteLockedVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.LockedQuote, Converter={StaticResource converter}, Mode=OneWay}"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.QuoteTotalVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock
+                        Text="Total"
+                        TextAlignment="Center" />
+                </Grid>
+                <Grid Visibility="{Binding BorrowVM.QuoteTotalVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock 
+                        Text="{Binding BorrowVM.TotalQuote, Converter={StaticResource converter}, Mode=OneWay}" 
+                        TextAlignment="Center" />
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox 
+            x:Name="ScraperBox"
+            Canvas.Left="{Binding VisibilityVM.ScraperLeft, Mode=TwoWay}"
+            Canvas.Top="{Binding VisibilityVM.ScraperTop, Mode=TwoWay}"
+            Visibility="{Binding SettingsVM.ShowScraperButtonIsChecked, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+            MouseMove="ScraperBox_MouseMove"
+            PreviewMouseLeftButtonDown="ScraperBox_PreviewMouseLeftButtonDown"
+            Foreground="AntiqueWhite"
+            Style="{StaticResource NoHeader}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="170" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Margin="2,0,2,0" >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="6"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.ColumnSpan="2"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Margin="0,-2,0,0"
+                            VerticalAlignment="Center"
+                            TextAlignment="Center"
+                            Text="Watching Mode Settings" />
+                        <StackPanel 
+                            Grid.Row="1"
+                            Grid.Column="0" 
+                            Orientation="Horizontal">
+                            <Label 
+                                Padding="0"
+                                Foreground="White"
+                                VerticalAlignment="Center"
+                                ToolTip="The PnL percentage to start the guesser looking to sell and possibly enter waiting mode"
+                                Content="%" />
+                            <Label
+                                Padding="0"
+                                Margin="3,0,0,0"
+                                Foreground="White"
+                                VerticalAlignment="Center"
+                                ToolTip="The PnL percentage to start the guesser looking to sell and possibly enter waiting mode"
+                                Content="{Binding ScraperVM.PercentDecimal, Converter={StaticResource priceScale}, Mode=OneWay}" />
+                        </StackPanel>
+                        <tk:DecimalUpDown
+                            Grid.Row="1"
+                            Margin="0,1,0,1"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Maximum="100.0"
+                            Minimum="0.001"
+                            Increment="0.001"
+                            ToolTip="The PnL percentage to start the guesser looking to sell and possibly enter waiting mode"
+                            Value="{Binding ScraperVM.SellPercent}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Foreground="White"
+                            ToolTip="Used to set the Up and Down price based on a price bias (Range)"
+                            Content="Price Bias"
+                            VerticalAlignment="Center"/>
+                        <tk:DecimalUpDown
+                            Margin="0,1,0,1"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            ToolTip="Used to set the Up and Down price based on a price bias (Range)"
+                            VerticalContentAlignment="Center"
+                            Value="{Binding ScraperVM.PriceBias}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Foreground="White"
+                            ToolTip="If direction bias is Bearish, The Up Price will be ignored&#xA;If the direction is Bullish the Down Price will be ignored&#xA;The behavior of this feature will change in a future patch"
+                            Content="Direction Bias"
+                            VerticalAlignment="Center"/>
+                        <ComboBox
+                            x:Name="Combo1"
+                            Margin="0,1,0,1"
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            ToolTip="If direction bias is Bearish, The Up Price will be ignored&#xA;If the direction is Bullish the Down Price will be ignored&#xA;The behavior of this feature will change in a future patch"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"
+                            SelectedItem="{Binding ScraperVM.BiasDirectionComboBox, UpdateSourceTrigger=PropertyChanged}"                        
+                            TextBlock.FontSize="9">
+                            <ComboBoxItem IsSelected="{Binding ScraperVM.SelectedItem.None}" Content="None"/>
+                            <ComboBoxItem IsSelected="{Binding ScraperVM.SelectedItem.Bearish}" Content="Bearish"/>
+                            <ComboBoxItem IsSelected="{Binding ScraperVM.SelectedItem.Bullish}" Content="Bullish"/>
+                        </ComboBox>
+                        <StackPanel 
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                            <Button 
+                                Content="B+" 
+                                Width="30"
+                                Margin="2"
+                                FontSize="12"
+                                ToolTip="Increase the Price Bias"
+                                Command="{Binding ScraperVM.IncreaseBiasCommand, Mode=OneWay}" 
+                                IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+                            <Button 
+                                Content="B-"
+                                Width="30"
+                                FontSize="12"
+                                Margin="2"
+                                ToolTip="Decrease the Price Bias"
+                                Command="{Binding ScraperVM.DecreaseBiasCommand, Mode=OneWay}"
+                                IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+                        </StackPanel>
+                        <StackPanel 
+                            Grid.Row="5" 
+                            Grid.Column="1"
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                            <Button 
+                                Content="S+"
+                                Width="30"
+                                FontSize="12"
+                                Margin="2"
+                                ToolTip="Increase the Price Bias Step"
+                                Command="{Binding ScraperVM.IncreaseStepCommand, Mode=OneWay}"
+                                IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+                            <Button 
+                                Content="S-"
+                                Width="30"
+                                FontSize="12"
+                                Margin="2"
+                                ToolTip="Decrease the Price Bias Step"
+                                Command="{Binding ScraperVM.DecreaseStepCommand, Mode=OneWay}"
+                                IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+                        </StackPanel>
+                        <StackPanel 
+                            Grid.Row="4" 
+                            Grid.Column="0"
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                            <Button 
+                                Content="P+"
+                                FontSize="12"
+                                Width="30"
+                                Margin="2"
+                                ToolTip="Increase the Scrape percent"
+                                Command="{Binding ScraperVM.IncreasePercentCommand, Mode=OneWay}"
+                                IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+                            <Button 
+                                Content="P-"
+                                FontSize="12"
+                                Width="30"
+                                Margin="2"
+                                ToolTip="Decrease the Scrape percent"
+                                Command="{Binding ScraperVM.DecreasePercentCommand, Mode=OneWay}"
+                                IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+                        </StackPanel>
+                        <StackPanel
+                                Orientation="Horizontal"                     
+                                Grid.Row="5" 
+                                Grid.Column="0" 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center">
+                            <CheckBox 
+                                    ToolTip="If you untick this box the scraper will place market orders when it Adds"
+                                    IsChecked="{Binding ScraperVM.UseLimitAdd, Mode=OneWay}"
+                                    Command="{Binding ScraperVM.UseLimitAddCommand, Mode=OneWay}"/>
+                            <CheckBox 
+                                    ToolTip="If you untick this box the scraper will place market orders when it Closes"
+                                    IsChecked="{Binding ScraperVM.UseLimitClose, Mode=OneWay}"
+                                    Command="{Binding ScraperVM.UseLimitCloseCommand, Mode=OneWay}"/>
+                            <CheckBox 
+                                    ToolTip="If you untick this box the scraper will place market orders when it Buys"
+                                    IsChecked="{Binding ScraperVM.UseLimitBuy, Mode=OneWay}"
+                                    Command="{Binding ScraperVM.UseLimitBuyCommand}"/>
+                            <CheckBox 
+                                    ToolTip="If you untick this box the scraper will place market orders when it Sells"
+                                    IsChecked="{Binding ScraperVM.UseLimitSell, Mode=OneWay}"
+                                    Command="{Binding ScraperVM.UseLimitSellCommand, Mode=OneWay}"/>
+                        </StackPanel>
+                        <TextBlock
+                            Grid.Row="7"
+                            Grid.ColumnSpan="2"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            TextAlignment="Center"
+                            Margin="0,-2,0,0"
+                            VerticalAlignment="Center"
+                            Text="Watching Overview" />
+                        <Label 
+                            Padding="0"
+                            Grid.Row="8"
+                            Grid.Column="0"
+                            Foreground="White"
+                            Content="Up"
+                            ToolTip="The price of the next order if the price increases. &#xA;You can change this by increasing or decreasing the bias"
+                            VerticalAlignment="Center"/>
+                        <TextBlock
+                            Grid.Row="8"
+                            Grid.Column="1"
+                            Margin="1,1,1,1"
+                            Foreground="White"
+                            ToolTip="The price of the next order if the price increases. &#xA;You can change this by increasing or decreasing the bias"
+                            Text="{Binding ScraperVM.NextPriceUp, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            HorizontalAlignment="Center"/>
+                        <Label 
+                            Padding="0"
+                            Grid.Row="9"
+                            Grid.Column="0"
+                            Foreground="White"
+                            ToolTip="The price of the next order if the price decreases. &#xA;You can change this by increasing or decreasing the bias"
+                            Content="Down"
+                            VerticalAlignment="Center"/>
+                        <TextBlock
+                            Grid.Row="9"
+                            Grid.Column="1"
+                            Margin="1,1,1,1"
+                            Foreground="White"
+                            ToolTip="The price of the next order if the price decreases. &#xA;You can change this by increasing or decreasing the bias"
+                            Text="{Binding ScraperVM.NextPriceDown, Converter={StaticResource priceScale}, Mode=OneWay}" 
+                            HorizontalAlignment="Center"/>
+                        <Label 
+                            Padding="0"
+                            Grid.Row="10"
+                            Grid.Column="0"
+                            Foreground="White"
+                            ToolTip="Current profit or loss of the order the scraper is currently watching"
+                            Content="Price" 
+                            VerticalAlignment="Center"/>
+                        <TextBlock
+                            Grid.Row="10"
+                            Grid.Column="1"
+                            Margin="1,1,1,1"
+                            Foreground="White"
+                            ToolTip="The price the order the scraper is watching was filled at"
+                            HorizontalAlignment="Center"
+                            Text="{Binding ScraperVM.BuyPrice, Converter={StaticResource priceScale}, Mode=OneWay}" />
+                        <Label 
+                            Padding="0"
+                            Grid.Row="11"
+                            Grid.Column="0"
+                            Foreground="White"
+                            ToolTip="The quantity to scrape, The scraper will get this value from the first order on your order list"
+                            Content="Quantity"
+                            VerticalAlignment="Center"/>
+                        <TextBlock
+                            Grid.Row="11"
+                            Grid.Column="1"
+                            Margin="1,1,1,1"
+                            Text="{Binding ScraperVM.Quantity, Converter={StaticResource tickScale}, Mode=OneWay}"
+                            TextAlignment="Center"
+                            ToolTip="The quantity to scrape, The scraper will get this value from the first order on your order list"            
+                            Foreground="White"/>
+                        <Label 
+                            Padding="0"
+                            Grid.Row="14"
+                            Grid.Column="0"
+                            Foreground="White"
+                            Content="Running Total"
+                            VerticalAlignment="Center"/>
+                        <TextBlock 
+                            Grid.Row="14"
+                            Grid.Column="1"
+                            Margin="1,1,1,1"
+                            Text="{Binding ScraperVM.RunningTotal, Mode=OneWay}"
+                            TextAlignment="Center"
+                            Foreground="{Binding ScraperVM.RunningTotalColor, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            Grid.Row="15"
+                            Grid.Column="0"
+                            Foreground="White"
+                            Content="Status"
+                            VerticalAlignment="Center"/>
+                        <TextBlock
+                            Padding="0"
+                            Grid.Row="15"
+                            Grid.Column="1"
+                            Margin="1,1,1,1"
+                            Text="{Binding ScraperVM.Status, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                            TextAlignment="Center"
+                            Foreground="{Binding ScraperVM.StatusColor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+                </StackPanel>
+                <StackPanel 
+                    Margin="4,0,4,0" 
+                    Grid.Column="2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="6"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="0"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.ColumnSpan="2"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Margin="0,-2,0,0"
+                            VerticalAlignment="Center"
+                            TextAlignment="Center"
+                            Text="Waiting Mode Settings" />
+                        <StackPanel 
+                            Grid.Row="1"
+                            Grid.Column="0" 
+                            Orientation="Horizontal">
+                            <Label
+                                Padding="0"
+                                Foreground="White"
+                                VerticalAlignment="Center"
+                                ToolTip="If the price reverses down this much in waiting mode the guesser will start looking to buy"
+                                Content="- %" />
+                            <Label
+                                Padding="0"
+                                Margin="3,0,0,0"
+                                Foreground="White"
+                                VerticalAlignment="Center"
+                                ToolTip="If the price reverses down this much in waiting mode the guesser will start looking to buy"
+                                Content="{Binding ScraperVM.DownDecimal, Converter={StaticResource priceScale}, Mode=OneWay}" />
+                        </StackPanel>
+                        <tk:DecimalUpDown
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Maximum="100.0"
+                            Minimum="0.001"
+                            Margin="0,1,0,1"
+                            Increment="0.001"
+                            ToolTip="If the price reverses down this much in waiting mode the guesser will start looking to buy"
+                            Value="{Binding ScraperVM.ReverseDownPercent}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label
+                            Padding="0"
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            ToolTip="This amount of time must pass consecutively in reversal before a buy order is placed &#xA; Measured in seconds"                    
+                            Content="Wait Time" />
+                        <tk:DecimalUpDown
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Margin="0,1,0,1"
+                            Increment="1"
+                            Maximum="800"
+                            Minimum="40"
+                            ToolTip="This amount of time must pass consecutively in reversal before a buy order is placed &#xA; Measured in seconds"     
+                            Value="{Binding ScraperVM.WaitTime}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Foreground="White" 
+                            ToolTip="The amount of times the wait time can pass before a buy order is placed anyway"
+                            Content="Wait Count" />
+                        <tk:DecimalUpDown
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Margin="0,1,0,1"
+                            Increment="1"
+                            Maximum="10"
+                            Minimum="1"
+                            ToolTip="The amount of times the wait time can pass before a buy order is placed anyway"
+                            Value="{Binding ScraperVM.WaitTimeCount}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <StackPanel 
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                            <Button 
+                                    Content="D+" 
+                                    Width="30"
+                                    FontSize="12"
+                                    Margin="2"
+                                    ToolTip="Increase the Down Reverse Percentage"
+                                    Command="{Binding ScraperVM.IncreaseDownReverseCommand, Mode=OneWay}" 
+                                    IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+                            <Button 
+                                    Content="D-"
+                                    Width="30"
+                                    FontSize="12"
+                                    Margin="2"
+                                    ToolTip="Decrease the Down Reverse Percentage"
+                                    Command="{Binding ScraperVM.DecreaseDownReverseCommand, Mode=OneWay}"
+                                    IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+                        </StackPanel>
+                        <StackPanel 
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                Orientation="Horizontal" 
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                            <Button 
+                                    Content="C+" 
+                                    Width="30"
+                                    FontSize="12"
+                                    Margin="2"
+                                    ToolTip="Increase the Wait Count"
+                                    Command="{Binding ScraperVM.IncreaseWaitCountCommand, Mode=OneWay}" 
+                                    IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+                            <Button 
+                                    Content="C-"
+                                    Width="30"
+                                    FontSize="12"
+                                    Margin="2"
+                                    ToolTip="Decrease the Wait Count"
+                                    Command="{Binding ScraperVM.DecreaseWaitCountCommand, Mode=OneWay}"
+                                    IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+                        </StackPanel>
+                        <StackPanel 
+                                Grid.Row="4" 
+                                Grid.Column="0"
+                                Orientation="Horizontal" 
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                            <Button 
+                                    Content="W+"
+                                    Width="30"
+                                    FontSize="12"
+                                    Margin="2"
+                                    ToolTip="Increase the Wait Time by 5"
+                                    Command="{Binding ScraperVM.IncreaseWaitTimeCommand, Mode=OneWay}"
+                                    IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+                            <Button 
+                                    Content="W-"
+                                    Width="30"
+                                    FontSize="12"
+                                    Margin="2"
+                                    ToolTip="Decrease the Wait Time by 5"
+                                    Command="{Binding ScraperVM.DecreaseWaitTimeCommand, Mode=OneWay}"
+                                    IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"/>
+
+                        </StackPanel>
+                        <TextBlock
+                            FontWeight="Bold"
+                            Grid.Row="7"
+                            Grid.ColumnSpan="2"
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            TextAlignment="Center"
+                            Text="Waiting Overview" />
+                        <Label
+                            Padding="0"
+                            Grid.Row="8"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Foreground="White"
+                            Content="Price" />
+                        <TextBlock
+                            Grid.Row="8"
+                            Grid.Column="1"
+                            Margin="0,1,0,1"
+                            Foreground="White"
+                            ToolTip="The best bid of the current symbol"
+                            HorizontalAlignment="Center"
+                            Text="{Binding ScraperVM.WaitPrice, Converter={StaticResource priceScale}, Mode=OneWay}" />
+                        <Label 
+                            Padding="0"
+                            Grid.Row="9"                
+                            VerticalAlignment="Center"
+                            Grid.Column="0"
+                            Foreground="White"
+                            Content="Wait Counter"/>
+                        <TextBlock
+                            Grid.Row="9"
+                            Grid.Column="1"
+                            Margin="0,1,0,1"
+                            Foreground="White"
+                            Text="{Binding ScraperVM.Down, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                            HorizontalAlignment="Center"/>
+                        <StackPanel
+                            Orientation="Horizontal"                    
+                            Grid.Row="5" 
+                            Grid.Column="1" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center">
+                            <CheckBox 
+                                ToolTip="Don't Guess Sell, Settle the order as soon as possible &#xA;You can use this with switch to next"   
+                                IsChecked="{Binding ScraperVM.DontGuessSellIsChecked, Mode=OneWay}"
+                                IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"
+                                Command="{Binding ScraperVM.DontGuessSellCommand, Mode=OneWay}"/>
+                            <CheckBox 
+                                ToolTip="Don't Guess Buy, Settle the order as soon as possible"   
+                                IsChecked="{Binding ScraperVM.DontGuessBuyIsChecked, Mode=OneWay}"
+                                IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"
+                                Command="{Binding ScraperVM.DontGuessBuyCommand, Mode=OneWay}"/>
+                            <CheckBox 
+                                ToolTip="Switch to next buy in the order list instead of waiting &#xA;This can be used to slowly close out orders"   
+                                IsChecked="{Binding ScraperVM.SwitchAutoIsChecked, Mode=OneWay}"
+                                IsEnabled="{Binding ScraperVM.IsChangeBiasEnabled, Mode=OneWay}"
+                                Command="{Binding ScraperVM.UseSwitchAutoCommand, Mode=OneWay}"/>
+                            <CheckBox 
+                                ToolTip="Buy if the price reverses up by the reverse down amount"   
+                                IsChecked="{Binding ScraperVM.BuyReverseIsChecked, Mode=OneWay}"
+                                IsEnabled="{Binding ScraperVM.DontGuessBuyIsChecked, Mode=OneWay}"
+                                Command="{Binding ScraperVM.BuyReverseCommand, Mode=OneWay}"/>
+                            <CheckBox 
+                                ToolTip="If you tick this box the pnl/log will be cleared"
+                                IsChecked="{Binding ScraperVM.ClearStatsIsChecked, Mode=OneWay}"
+                                IsEnabled="{Binding ScraperVM.IsStartEnabled, Mode=OneWay}"
+                                Command="{Binding ScraperVM.TriggerClearStatsCommand, Mode=OneWay}"/>
+                        </StackPanel>
+                        <Label 
+                            Padding="0"
+                            Grid.Row="15"
+                            Grid.Column="0"
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            ToolTip="Elapsed time of the Guesser"
+                            Content="Guesser" />
+                        <TextBlock
+                            Grid.Row="15"
+                            Grid.Column="1"
+                            Margin="1,1,1,1"
+                            Foreground="White"
+                            TextAlignment="Right"
+                            ToolTip="Elapsed time of the Guesser"
+                            Text="{Binding ScraperVM.ScraperCounter.GuesserElapsedString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Label 
+                            Padding="0"
+                            Grid.Row="16"
+                            Grid.Column="0"
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            Content="Dead Count" />
+                        <TextBlock
+                            Grid.Row="16"
+                            Grid.Column="1"
+                            Margin="1,1,1,1"
+                            Foreground="White"
+                            TextAlignment="Right"
+                            Text="{Binding ScraperVM.ScraperCounter.GuesserDeadCount, Mode=OneWay}" />
+                    </Grid>
+                </StackPanel>
+                <StackPanel Margin="4,0,4,0" Grid.Column="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="18"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock 
+                            FontWeight="Bold"
+                            Grid.Row="12"
+                            Grid.ColumnSpan="2"
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            TextAlignment="Center"
+                            Text="Guesser Overview" />
+                        <Label 
+                            Padding="0"
+                            Grid.Row="13"
+                            Grid.Column="0"
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            Content="Up Count" />
+                        <TextBlock
+                            Grid.Row="13"
+                            Grid.Column="1"
+                            Margin="1,1,1,1"
+                            Foreground="White"
+                            TextAlignment="Right"
+                            Text="{Binding ScraperVM.ScraperCounter.GuesserUpCount, Mode=OneWay}" />
+                        <Label 
+                            Padding="0"
+                            Grid.Row="14"
+                            Grid.Column="0"
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            Content="Divider" />
+                        <TextBlock
+                            Grid.Row="14"
+                            Grid.Column="1"
+                            Margin="1,1,1,1"
+                            Foreground="White"
+                            TextAlignment="Right"
+                            Text="{Binding ScraperVM.ScraperCounter.GuesserDiv,StringFormat=#0.0000, Mode=OneWay}" />
+                        <Label 
+                            Padding="0"
+                            Grid.Row="15"
+                            Grid.Column="0"
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            Content="Down Count" />
+                        <TextBlock
+                            Grid.Row="15"
+                            Grid.Column="1"
+                            Margin="1,1,1,1"
+                            Foreground="White"
+                            TextAlignment="Right"
+                            Text="{Binding ScraperVM.ScraperCounter.GuesserDownCount, Mode=OneWay}" />
+                        <TextBlock 
+                            Grid.Row="0"
+                            Grid.ColumnSpan="2"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Margin="0,-2,0,0"
+                            VerticalAlignment="Center"
+                            TextAlignment="Center"
+                            Text="Guesser Settings" />
+                        <Label 
+                            Padding="0"
+                            Grid.Row="1"
+                            Grid.Column="0" 
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            ToolTip="Up Count before the Guesser will reset if the Div Percent has been reached"
+                            Content="Reset Up S" />
+                        <tk:DecimalUpDown
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Minimum="100"
+                            Margin="0,1,0,1"
+                            Increment="10"
+                            ToolTip="Up Count before the Guesser will reset if the Div Percent has been reached"
+                            Value="{Binding ScraperVM.ScraperCounter.GuesserResetShortCountUp}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            Grid.Row="2"
+                            Grid.Column="0" 
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            ToolTip="Down Count before the Guesser will reset if the Div Percent has been reached"
+                            Content="Reset Down S" />
+                        <tk:DecimalUpDown
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Minimum="100"
+                            Margin="0,1,0,1"
+                            Increment="10"
+                            ToolTip="Down Count before the Guesser will reset if the Div Percent has been reached"
+                            Value="{Binding ScraperVM.ScraperCounter.GuesserResetShortCountDown}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Foreground="White"
+                            VerticalAlignment="Center"    
+                            ToolTip="Up Count before the Guesser will Reset"
+                            Content="Reset Up L" />
+                        <tk:DecimalUpDown
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Margin="0,1,0,1"
+                            Minimum="100"
+                            Increment="10"
+                            ToolTip="Up Count before the Guesser will Reset"
+                            Value="{Binding ScraperVM.ScraperCounter.GuesserResetLongCountUp}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            ToolTip="Down Count before the Guesser will Reset" 
+                            Content="Reset Down L" />
+                        <tk:DecimalUpDown
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"                            
+                            Minimum="100"
+                            Margin="0,1,0,1"
+                            Increment="10" 
+                            ToolTip="Down Count before the Guesser will Reset" 
+                            Value="{Binding ScraperVM.ScraperCounter.GuesserResetLongCountDown}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Grid.Row="5"
+                            Grid.Column="0"
+                            Foreground="White" 
+                            ToolTip="After this amount of time in seconds the Guesser will reset if the Time Bias is triggered" 
+                            Content="Reset Time" />
+                        <tk:DecimalUpDown
+                            Grid.Row="5"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Margin="0,1,0,1"
+                            Minimum="10"
+                            Maximum="100"
+                            Increment="1"                            
+                            ToolTip="After this amount of time in seconds the Guesser will reset if the Time Bias is triggered" 
+                            Value="{Binding ScraperVM.ScraperCounter.GuesserResetTime}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Grid.Row="6"
+                            Grid.Column="0"
+                            Foreground="White" 
+                            ToolTip="Triggers if the divider is between the time bias and negative the time bias (eg. -5 and 5) and the Reset Time has been reached" 
+                            Content="Time Bias" />
+                        <tk:DecimalUpDown
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Margin="0,1,0,1"
+                            Increment="1"
+                            Minimum="1"
+                            Maximum="50"
+                            ToolTip="Triggers if the divider is between the time bias and negative the time bias (eg. -5 and 5) and the Reset Time has been reached" 
+                            Value="{Binding ScraperVM.ScraperCounter.GuesserResetTimeBias}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Grid.Row="7"
+                            Grid.Column="0"
+                            ToolTip="The divider percent that needs to be reach before the Short period can trigger" 
+                            Foreground="White" 
+                            Content="Div Percent" />
+                        <tk:DecimalUpDown
+                            Grid.Row="7"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Margin="0,1,0,1"
+                            Increment="1"
+                            Maximum="50"
+                            Minimum="5"
+                            ToolTip="The divider percent that needs to be reach before the Short period can trigger" 
+                            Value="{Binding ScraperVM.ScraperCounter.GuesserDivPercent}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Grid.Row="8"
+                            Grid.Column="0"
+                            Foreground="White" 
+                            ToolTip="How much and Up event should positively effect the Guesser" 
+                            Content="Up Bias" />
+                        <tk:DecimalUpDown
+                            Grid.Row="8"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Margin="0,1,0,1"
+                            Increment="0.1"                
+                            Maximum="5"
+                            Minimum="1"
+                            ToolTip="How much and Up event should positively effect the Guesser"
+                            Value="{Binding ScraperVM.ScraperCounter.GuesserUpBias}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Grid.Row="9"
+                            Grid.Column="0"
+                            Foreground="White" 
+                            ToolTip="How much and Down event should positively effect the Guesser"
+                            Content="Down Bias" />
+                        <tk:DecimalUpDown
+                            Grid.Row="9"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Margin="0,1,0,1"
+                            Maximum="5"
+                            Minimum="1"
+                            Increment="0.1"
+                            ToolTip="How much and Down event should positively effect the Guesser"
+                            Value="{Binding ScraperVM.ScraperCounter.GuesserDownBias}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>                
+                        <Label 
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Grid.Row="10"
+                            Grid.Column="0"
+                            Foreground="White" 
+                            Content="Dead Time" />
+                        <tk:DecimalUpDown
+                            Grid.Row="10"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Margin="0,1,0,1"
+                            Value="{Binding ScraperVM.ScraperCounter.GuesserDeadTime}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                        <Label 
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Grid.Row="11"
+                            Grid.Column="0"
+                            Foreground="White" 
+                            ToolTip="When the guesser should settle orders, This should be a negative number"
+                            Content="Reverse Bias" />
+                        <tk:DecimalUpDown
+                            Grid.Row="11"
+                            Grid.Column="1"
+                            VerticalContentAlignment="Center"
+                            Margin="0,1,0,1"
+                            Maximum="-10"
+                            Increment="10"
+                            ToolTip="When the guesser should settle orders, This should be a negative number"
+                            Value="{Binding ScraperVM.GuesserReverseBias}"
+                            IsEnabled="{Binding ScraperVM.IsSettingsEnabled, Mode=OneWay}"/>
+                    </Grid>
+                </StackPanel>
+                <StackPanel
+                    Grid.Column="5" Margin="2,0,2,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            FontWeight="Bold"
+                            TextAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="White"
+                            Margin="0,-2,0,0"
+                            Text="Scrap Log" />
+                        <TextBox  
+                            Grid.Row="1"
+                            x:Name="ScrapLog"
+                            TextChanged="TextBox_TextChanged"
+                            TextWrapping="Wrap"    
+                            Text="{Binding ScraperVM.LogText, Mode=OneWay}" 
+                            HorizontalScrollBarVisibility="Hidden"
+                            VerticalScrollBarVisibility="Hidden" 
+                            Style="{StaticResource TextBoxRounded}" 
+                            IsReadOnly="True" 
+                            Height="170"/>
+                        <StackPanel 
+                            Margin="0,4,0,0" Grid.Row="2"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                            <TextBlock 
+                                Text="Win: "
+                                Foreground="White"/>
+                            <TextBlock 
+                                Text="{Binding ScraperVM.WinCount, Mode=OneWay}"
+                                Foreground="Green" 
+                                Margin="0,0,25,0"/>
+                            <TextBlock
+                                Text="Lose: " 
+                                Foreground="White"/>
+                            <TextBlock
+                                Text="{Binding ScraperVM.LoseCount, Mode=OneWay}"
+                                Foreground="Red"/>
+                        </StackPanel>
+
+                        <StackPanel
+                            Grid.Row="3" 
+                            Margin="0,20,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    FontWeight="Bold"
+                                    TextAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Foreground="White"
+                                    Margin="0,-2,0,0"
+                                    Text="Menu" />
+                                <Button 
+                                    Content="Start" 
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="2"
+                                    Command="{Binding ScraperVM.StartCommand, Mode=OneWay}" 
+                                    ToolTip="To start the scraper you need a buy order on your order list"
+                                    IsEnabled="{Binding ScraperVM.IsStartEnabled, Mode=OneWay}"/>
+                                <Button 
+                                    Content="Stop"
+                                    ToolTip="You can start and stop the scraper whenever you want to change the order it is watching &#xA;this will also interrupt the scraper waiting for buy"
+                                    Grid.Row="0"                        
+                                    Grid.Column="2"
+                                    Margin="2"
+                                    Command="{Binding ScraperVM.StopCommand, Mode=OneWay}"
+                                    IsEnabled="{Binding ScraperVM.IsStopEnabled, Mode=OneWay}"/>
+                                <Button
+                                    Content="Add" 
+                                    Grid.Row="1" 
+                                    Grid.Column="0"
+                                    Margin="2"
+                                    ToolTip="Manually add an order &#xA; The scraper will switch to this order with the current settings"
+                                    Command="{Binding ScraperVM.AddNewCommand, Mode=OneWay}" 
+                                    IsEnabled="{Binding ScraperVM.IsAddEnabled, Mode=OneWay}"/>
+                                <Button 
+                                    Content="Close" 
+                                    Grid.Row="1" 
+                                    Grid.Column="2"
+                                    Margin="2"
+                                    ToolTip="Manually close the buy order the scraper is watching &#xA;This will put the scraper in Waiting Mode"
+                                    Command="{Binding ScraperVM.CloseCurrentCommand, Mode=OneWay}" 
+                                    IsEnabled="{Binding ScraperVM.IsCloseCurrentEnabled, Mode=OneWay}"/>
+                                <Button 
+                                    Content="Switch" 
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="2"
+                                    ToolTip="Switch to the next Order in the list and Hide the Last Sell"
+                                    Command="{Binding ScraperVM.SwitchCommand, Mode=OneWay}" 
+                                    IsEnabled="{Binding ScraperVM.IsSwitchEnabled, Mode=OneWay}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+    </Canvas>
+</UserControl>
