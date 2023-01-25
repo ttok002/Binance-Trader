@@ -54,7 +54,8 @@
         ScrollViewer.VerticalScrollBarVisibility="Hidden"
         SelectedItem="{Binding SelectedListItem}" 
         HorizontalAlignment="Center"
-        HorizontalContentAlignment="Center">
+        HorizontalContentAlignment="Center" 
+        RenderOptions.CachingHint="Cache">
         <ListView.Resources>
             <ItemsPanelTemplate x:Key="x">
                 <VirtualizingStackPanel />
@@ -90,7 +91,7 @@
                     Header="Price" />
                 <GridViewColumn
                     Width="80"
-                    DisplayMemberBinding="{Binding CumulativeQuoteQuantityFilled, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource tickScale}, Mode=OneWay}"
+                    DisplayMemberBinding="{Binding CumulativeQuoteQuantityFilled, UpdateSourceTrigger=PropertyChanged, StringFormat='\{0:N6\}', Mode=OneWay}"
                     Header="Total" />
                 <GridViewColumn
                     Width="{Binding VisibilityVM.InterestWidth, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"

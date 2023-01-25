@@ -1,3 +1,8 @@
+### Version 2.8.1.4
+- [x] Cache hint
+- [x] Fix a bug that could stop the Scraper
+- [x] Change how `Total` is displayed on the UI
+
 ### Version 2.8.1.3
 - [x] Fix a bug that would Stop the Scraper if a Market order failed for some reason
 - [x] Fix a bug with Order Updates

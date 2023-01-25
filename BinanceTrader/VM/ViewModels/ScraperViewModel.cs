@@ -1022,30 +1022,11 @@ namespace BTNET.VM.ViewModels
             return true;
         }
 
-        private void WatchingLoopTask(OrderViewModel startOrder, bool sender)
+        private void WatchingLoopTask(OrderViewModel startOrder)
         {
-            if (RealTimeVM.BidPrice == ZERO || RealTimeVM.AskPrice == ZERO)
-            {
-                ScraperStopped.Invoke(false, TICKER_FAIL);
-                return;
-            }
-
-            ResetPriceQuantity(startOrder, true);
-
-            if (!sender && startOrder.Side != OrderSide.Buy)
-            {
-                ToggleStart(true);
-                ScraperCounter.CheckStart(OrderSide.Buy);
-                WaitingLoopStartEvent(startOrder); // -> Waiting Mode
-                return;
-            }
-
             if (BuyPrice > ZERO && Quantity > ZERO)
             {
-                ToggleStart(true);
-                ScraperCounter.CheckStart(OrderSide.Sell);
                 WatchingBlocked = false;
-
                 while (Started)
                 {
                     UpdateStatus(WATCHING, Static.Green);
@@ -1087,10 +1068,31 @@ namespace BTNET.VM.ViewModels
 
             ResetGuesserWatchingLoop();
 
-            _ = Task.Factory.StartNew(() =>
+            if (RealTimeVM.BidPrice == ZERO || RealTimeVM.AskPrice == ZERO)
             {
-                WatchingLoopTask(startOrder, (bool)sender);
-            }, TaskCreationOptions.DenyChildAttach).ConfigureAwait(false);
+                ScraperStopped.Invoke(false, TICKER_FAIL);
+                return;
+            }
+
+            ToggleStart(true);
+            ResetPriceQuantity(startOrder, true);
+            
+            if (!(bool)sender && startOrder.Side != OrderSide.Buy)
+            {
+                ScraperCounter.CheckStart(OrderSide.Buy);
+                _ = Task.Factory.StartNew(() =>
+                {
+                    WaitingLoopStartEvent(startOrder); // -> Waiting Mode
+                }, TaskCreationOptions.DenyChildAttach).ConfigureAwait(false);
+            }
+            else
+            {
+                ScraperCounter.CheckStart(OrderSide.Sell);
+                _ = Task.Factory.StartNew(() =>
+                {
+                    WatchingLoopTask(startOrder);  // -> Watching Mode
+                }, TaskCreationOptions.DenyChildAttach).ConfigureAwait(false);
+            }
         }
 
         protected private void WaitingLoopStartEvent(OrderViewModel sell)
