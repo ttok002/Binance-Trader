@@ -1,5 +1,5 @@
 ### Version 2.8.1.4
-- [x] Cache hint
+- [x] Add `Cache Hint` for some `UI` Controls
 - [x] Fix a bug that could stop the Scraper
 - [x] Change how `Total` is displayed on the UI
 
